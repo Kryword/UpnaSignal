@@ -21,7 +21,7 @@ public class UASComponent implements Runnable{
     
     @Override
     public void run(){
-        System.out.println("Hi I'm an uasComponent");
+        //Se implementa en la segunda parte del proyecto
     }
     
     public void stop(){

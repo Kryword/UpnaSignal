@@ -6,16 +6,8 @@
 package simulator;
 
 import app.AppLogin;
-import app.ContactsComponentInterface;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import verifier.VerifierCalculator;
 
 /**
  *
@@ -36,58 +28,24 @@ public class AppServiceSimulator {
             X.wait(1500);
         }
         
-        // Primer cliente simula un isInContacts con nickname cristian y si no
-        // lo está añade un nuevo cliente llamado cristian a la base de datos
-        // mediante addContact.
-        Runnable client1 = () -> {
-            try {
-                ContactsComponentInterface contactsInterface = new ContactsComponentInterface();
-                Future<Boolean> future = contactsInterface.isInContacts("cristian");
-                Boolean isInContacts = future.get();
-                System.out.println("Client 1:: <ThreadID:" + Thread.currentThread().getId() + "> Result<isInContacts(cristian)>:" + isInContacts);
-                System.out.flush();
-                if(!isInContacts){
-                    VerifierCalculator vCalculator = new VerifierCalculator();
-                    final SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-                    final byte[] salt = new byte[16];
-                    sr.nextBytes(salt);
-                    Future<Boolean> futureAdd = contactsInterface.addContact("cristian",vCalculator.getVerifier("cristian", "labops", salt));
-                    Boolean addContact = futureAdd.get();
-                    
-                    if(addContact){
-                        System.out.println("Client1:: <ThreadID: " + Thread.currentThread().getId() + "> Result<addContact(cristian)>:Añadido correctamente");
-                    }else{
-                        System.out.println("Client1:: <ThreadID: " + Thread.currentThread().getId() + "> Result<addContact(cristian)>:No ha sido añadido");
-                    }
-                }
-            } catch (InterruptedException ex) {
-                System.err.println("Cliente interrumpido.");
-                Logger.getLogger(AppServiceSimulator.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ExecutionException ex) {
-                System.err.println("Error en la ejecución del cliente.");
-                Logger.getLogger(AppServiceSimulator.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchAlgorithmException ex) {
-                System.err.println("Error: Algoritmo para generación de números aleatorios inexistente");
-                Logger.getLogger(AppServiceSimulator.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        };
         
-        Runnable client2 = () -> {
-            try {
-                ContactsComponentInterface contactsInterface = new ContactsComponentInterface();
-                Future<Boolean> future = contactsInterface.isInContacts("cristian");
-                Boolean result = future.get();
-                System.out.println("Client 1:: <ThreadID:" + Thread.currentThread().getId() + "> Result<isInContacts(cristian)>:" + result);
-                System.out.flush();
-            } catch (InterruptedException ex) {
-                System.err.println("Cliente interrumpido.");
-                Logger.getLogger(AppServiceSimulator.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ExecutionException ex) {
-                System.err.println("Error en la ejecución del cliente.");
-                Logger.getLogger(AppServiceSimulator.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        };
+        Runnable client0 = new CheckClient(0, "cristian");
         
+        Runnable client1 = new AddClient(1, "cristian", "labops");
+        
+        Runnable client2 = new CheckClient(2, "cristian");
+        
+        Runnable client3 = new GetClientVerifier(3, "cristian");
+        
+        Runnable client4 = new AddClient(4, "paco", "1234");
+        
+        Runnable client5 = new GetClientVerifier(5, "paco");
+        
+        executorForSimulation.execute(client0);
         executorForSimulation.execute(client1);
+        executorForSimulation.execute(client2);
+        executorForSimulation.execute(client3);
+        executorForSimulation.execute(client4);
+        executorForSimulation.execute(client5);
     }
 }

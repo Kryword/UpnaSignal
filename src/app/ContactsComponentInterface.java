@@ -17,13 +17,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
-import java.sql.Statement;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.security.auth.Subject;
-import org.bouncycastle.crypto.digests.SHA1Digest;
 
 /**
  *
@@ -169,7 +167,11 @@ public class ContactsComponentInterface {
         }
         
     }
-    
+    /**
+     * Clase confinada encargada de obtener el verificador del usuario
+     * No hace ninguna comprobación de la existencia del usuario en la base de
+     * datos
+     */
     final class GetVerifier implements Callable<byte[]>{
         
         private final Subject subject;
