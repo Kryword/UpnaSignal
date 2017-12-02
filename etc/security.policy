@@ -1,0 +1,17 @@
+/** Java Access Control Policy for the application **/
+
+grant codeBase "file:${{java.ext.dirs}}/*" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.dir}/login.jar"{
+    permission javax.security.auth.AuthPermission "createLoginContext.LTS";
+    permission javax.security.auth.AuthPermission "doAsPrivileged";
+};
+
+grant codeBase "file:${user.dir}/application.jar"{
+    permission javax.security.auth.AuthPermission "doPrivileged";
+    permission javax.security.auth.AuthPermission "doAsPrivileged";
+    permission java.net.SocketPermission "127.0.0.1:1527", "connect, resolve";
+    permission java.lang.RuntimePermission "modifyThread";
+};
