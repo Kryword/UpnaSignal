@@ -6,13 +6,20 @@ package App;
  * and open the template in the editor.
  */
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import verifier.VerifierCalculator;
 /**
  *
  * @author Kryword
@@ -33,20 +40,56 @@ public class DBConnectionsTest {
         try{
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-                            // Hay que cambiar esto por prepared statement en caso de inyección SQL
-            final Statement statement = connection.createStatement();                    
-            final String selectStatement = "SELECT nickname FROM Contacts WHERE nickname = '" + "cris" + "'";
-
-            if (statement.execute(selectStatement)) {
-                final ResultSet rs = statement.executeQuery(selectStatement);
+                            // Hay que cambiar esto por prepared statement en caso de inyección SQL                   
+            final String selectStatement = "SELECT nickname FROM Contacts WHERE nickname=?";
+            final PreparedStatement preparedStatement = connection.prepareStatement(selectStatement);
+            final String nickname = "cristian";
+            preparedStatement.setString(1, nickname);
+            if (preparedStatement.execute()) {
+                final ResultSet rs = preparedStatement.getResultSet();
                 result = rs.next();
-                System.out.println("Result = " + result);
+                System.out.println("isInContacts:" + result);
             }
         }catch(SQLException | ClassNotFoundException e){
             System.err.println("Error en SQL o Clase del driver");
             e.printStackTrace();
         }
-        assertEquals(true, result);
+        assertEquals(false, result);
+    }
+    
+    
+    @Test
+    public void DBAddContact() throws NoSuchAlgorithmException{
+        Boolean result = null;
+        try{
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            // Hay que cambiar esto por prepared statement en caso de inyección SQL  
+            final String insertStatement = "INSERT INTO Contacts(contactkey, nickname, verifier) VALUES (?,?,?)";
+            final PreparedStatement preparedInsertStatement = connection.prepareStatement(insertStatement);
+            final VerifierCalculator vc = new VerifierCalculator();
+            final SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+            final byte[] salt = new byte[16];
+            final String nickname = "test";
+            final String password = "password";
+            sr.nextBytes(salt);
+            byte[] verifier = vc.getVerifier(nickname, password, salt);
+            byte[] key = null;
+            try{
+                MessageDigest md = MessageDigest.getInstance("SHA1", "BC");
+                key = md.digest(nickname.getBytes());
+            }catch(NoSuchAlgorithmException| NoSuchProviderException ex){
+            }
+            preparedInsertStatement.setBytes(1, key);
+            preparedInsertStatement.setString(2, nickname);
+            preparedInsertStatement.setBytes(3, verifier);
+            result = preparedInsertStatement.executeUpdate() > 0;
+        }catch(SQLException | ClassNotFoundException e){
+            System.err.println("Error en SQL o Clase del driver");
+            e.printStackTrace();
+        }
+        System.out.println("Result from addContact: " + result);
+        assertEquals(false, result);
     }
     
     /**

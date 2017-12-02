@@ -19,12 +19,12 @@ import javax.security.auth.login.LoginException;
  *
  * @author Kryword
  */
-public class AppLogin {
+public class AppLogin implements Runnable{
     
-    static public void main (final String[] args) {
-    /*@Override
+    //static public void main (final String[] args) {
+    @Override
     public void run () {
-    */
+    
         try {
           //System.err.println("\t<ServiceLogin::run           (thread id " + Thread.currentThread().getId() + ")>");
 
@@ -50,7 +50,7 @@ public class AppLogin {
                     final Subject subject = lc.getSubject();
 
                     // 3: servicio sólo arranca si se consigue una autenticación positiva
-                    // 3.a: ServiceImplementation es innaccesible desde fuera del paquete
+                    // 3.a: AppImplementation es innaccesible desde fuera del paquete
                     final AppImplementation app = AppImplementation.getService(subject, 10);
 
                     // 3.b: servicio se arranca como usuario autenticado;

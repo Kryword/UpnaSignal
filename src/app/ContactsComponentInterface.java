@@ -6,6 +6,9 @@
 package app;
 
 import java.security.AccessController;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
@@ -84,17 +87,12 @@ public class ContactsComponentInterface {
             return AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>)() ->{
                 return Subject.doAsPrivileged(subject, (PrivilegedExceptionAction<Boolean>) () ->{
                     try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-                        // Hay que cambiar esto por prepared statement en caso de inyección SQL
-                        try (final Statement statement = connection.createStatement()) {
-                             
-                            final String selectStatement = "SELECT COUNT(1) FROM Contacts WHERE nickname = '" + nickname + "'";
-
-                            if (statement.execute(selectStatement)) {
-
-                                final ResultSet rs = statement.getResultSet();
-
-                                final Boolean result = rs.getBoolean(1);
-                                return result;
+                        final String selectStatement = "SELECT nickname FROM Contacts WHERE nickname=?";
+                        try (final PreparedStatement preparedStatement = connection.prepareStatement(selectStatement);) {
+                            preparedStatement.setString(1, nickname);
+                            if (preparedStatement.execute()) {
+                                final ResultSet rs = preparedStatement.getResultSet();
+                                return rs.next();
                             }
 
                         } catch (final SQLException ex) {
@@ -106,8 +104,8 @@ public class ContactsComponentInterface {
                     } catch (final SQLException ex) {
                         LOGGER.log(Level.SEVERE, "error al abrir la conexion", ex);
                     }
-                    //En caso de que no consiga ejecutarse devuelvo falso.
-                    return false;
+                    //En caso de que no consiga ejecutarse devuelvo null.
+                    return null;
                 }, null);
             });
             
@@ -131,9 +129,15 @@ public class ContactsComponentInterface {
             this.subject = subject;
             this.nickname = nickname;
             this.verifier = verifier;
-            SHA1Digest s = new SHA1Digest();
-            s.doFinal(nickname.getBytes(), 0);
-            key = s.getEncodedState();
+            byte[] tempKey = null;
+            try{
+                MessageDigest md = MessageDigest.getInstance("SHA1", "BC");
+                tempKey = md.digest(nickname.getBytes());
+            }catch(NoSuchAlgorithmException| NoSuchProviderException ex){
+                LOGGER.log(Level.SEVERE, "Algoritmo o proveedor incorrectos o inexistentes", ex);
+            }finally{
+                key = tempKey;
+            }
         }
         
         @Override
@@ -145,26 +149,20 @@ public class ContactsComponentInterface {
                     
                     try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                         
-                        final String insertStatement = "INSERT INTO Contacts(key, nickname, verifier) VALUES (?,?,?)";
+                        final String insertStatement = "INSERT INTO Contacts(contactkey, nickname, verifier) VALUES (?,?,?)";
                         final PreparedStatement preparedInsertStatement = connection.prepareStatement(insertStatement);
                         preparedInsertStatement.setBytes(1, key);
                         preparedInsertStatement.setString(2, nickname);
                         preparedInsertStatement.setBytes(3, verifier);
-                        if (preparedInsertStatement.execute()) {
-
-                            final ResultSet rs = preparedInsertStatement.getResultSet();
-
-                            final Boolean result = rs.next();
-                            return result;
-                        }
+                        return preparedInsertStatement.executeUpdate() > 0;
                         
                     } catch (final SQLTimeoutException ex) {
                         LOGGER.log(Level.SEVERE, "timeout al abrir la conexion", ex);
                     } catch (final SQLException ex) {
                         LOGGER.log(Level.SEVERE, "error al abrir la conexion", ex);
                     }
-                    //En caso de que no consiga ejecutarse devuelvo falso, aunque lo lógico sería volver a intentarlo.
-                    return false;
+                    //En caso de que no consiga ejecutarse devuelvo null.
+                    return null;
                 }, null);
             });
             
