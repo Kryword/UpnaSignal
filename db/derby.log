@@ -1,0 +1,31 @@
+Fri Dec 01 09:16:57 CET 2017 : Servidor de red Apache Derby: Se ha iniciado 10.11.1.2 - (1629631) y está listo para aceptar las conexiones en el puerto 1527
+----------------------------------------------------------------
+Fri Dec 01 09:16:57 CET 2017:
+ Iniciando instancia a816c00e-0160-1126-6488-0000534ff16f de Derby, versión The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): 
+en el directorio de base de datos C:\Users\Labora1\Desktop\UpnaSignal\db\UpnaSignal con el cargador de clases sun.misc.Launcher$AppClassLoader@1d44bcfa
+Cargado desde file:/C:/Program%20Files/Java/jdk1.8.0_102/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_102-b14
+user.dir=C:\Program Files\Java\jdk1.8.0_102\db
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=C:\Users\Labora1\Desktop\UpnaSignal\db
+Cargador de clases de base de datos iniciado - derby.database.classpath=''
+----------------------------------------------------------------
+Fri Dec 01 09:17:10 CET 2017:
+Cerrando la instancia a816c00e-0160-1126-6488-0000534ff16f en el directorio de base de datos C:\Users\Labora1\Desktop\UpnaSignal\db\UpnaSignal con cargador de clases sun.misc.Launcher$AppClassLoader@1d44bcfa
+Fri Dec 01 09:17:10 CET 2017 Thread[DRDAConnThread_2,5,main] (DATABASE = UpnaSignal), (DRDAID = {2}), Cierre de la base de datos 'UpnaSignal'.
+----------------------------------------------------------------
+Fri Dec 01 09:18:58 CET 2017:
+ Iniciando instancia a65c80ac-0160-1126-6488-0000534ff16f de Derby, versión The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): 
+en el directorio de base de datos C:\Users\Labora1\Desktop\UpnaSignal\db\UpnaSignal con el cargador de clases sun.misc.Launcher$AppClassLoader@1d44bcfa
+Cargado desde file:/C:/Program%20Files/Java/jdk1.8.0_102/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_102-b14
+user.dir=C:\Program Files\Java\jdk1.8.0_102\db
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=C:\Users\Labora1\Desktop\UpnaSignal\db
+Cargador de clases de base de datos iniciado - derby.database.classpath=''

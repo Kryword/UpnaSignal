@@ -1,0 +1,37 @@
+Fri Dec 01 19:56:53 CET 2017 : Servidor de red Apache Derby: Se ha iniciado 10.11.1.2 - (1629631) y está listo para aceptar las conexiones en el puerto 1527
+----------------------------------------------------------------
+Fri Dec 01 19:57:16 CET 2017:
+ Iniciando instancia a816c00e-0160-1370-456d-ffffd6a2dece de Derby, versión The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): 
+en el directorio de base de datos C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal\UpnaSignal con el cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
+Cargado desde file:/C:/Program%20Files/Java/jdk1.8.0_121/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_121-b13
+user.dir=C:\Program Files\Java\jdk1.8.0_121\db
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal
+Cargador de clases de base de datos iniciado - derby.database.classpath=''
+----------------------------------------------------------------
+Fri Dec 01 19:57:16 CET 2017:
+Cerrando la instancia a816c00e-0160-1370-456d-ffffd6a2dece en el directorio de base de datos C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal\UpnaSignal con cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
+Fri Dec 01 19:57:16 CET 2017 Thread[DRDAConnThread_3,5,main] (DATABASE = UpnaSignal), (DRDAID = {2}), Cierre de la base de datos 'UpnaSignal'.
+----------------------------------------------------------------
+Fri Dec 01 19:57:22 CET 2017:
+ Iniciando instancia a65c80ac-0160-1370-456d-ffffd6a2dece de Derby, versión The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): 
+en el directorio de base de datos C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal\UpnaSignal con el cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
+Cargado desde file:/C:/Program%20Files/Java/jdk1.8.0_121/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_121-b13
+user.dir=C:\Program Files\Java\jdk1.8.0_121\db
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal
+Cargador de clases de base de datos iniciado - derby.database.classpath=''
+----------------------------------------------------------------
+Fri Dec 01 20:32:58 CET 2017: cerrando motor de Derby
+----------------------------------------------------------------
+Fri Dec 01 20:32:58 CET 2017:
+Cerrando la instancia a65c80ac-0160-1370-456d-ffffd6a2dece en el directorio de base de datos C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal\UpnaSignal con cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
+----------------------------------------------------------------
