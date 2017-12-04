@@ -1,14 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package verifier;
 
 import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import static org.bouncycastle.crypto.agreement.srp.SRP6StandardGroups.rfc5054_1024;
 import org.bouncycastle.crypto.agreement.srp.SRP6VerifierGenerator;
 import org.bouncycastle.crypto.digests.SHA256Digest;
@@ -16,10 +9,14 @@ import org.bouncycastle.crypto.params.SRP6GroupParameters;
 
 /**
  *
- * @author Kryword
+ * @author Cristian Berner
+ * 
+ * Clase encargada de generar un verificador a partir del nickname, contraseña 
+ * del usuario y la sal. Para ello utilizo los métodos disponibles
+ * en las librerías de bouncycastle.
  */
 public class VerifierCalculator {
-    public byte[] getVerifier(final String nickname, final String password, final byte[] salt){
+    public byte[] getVerifier(final String nickname, final String password, final byte[] salt) throws NoSuchAlgorithmException{
         
         final SRP6GroupParameters params = rfc5054_1024;
         

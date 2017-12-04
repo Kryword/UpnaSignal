@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator;
 
 import app.ContactsComponentInterface;
@@ -13,7 +8,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Kryword
+ * @author Cristian Berner
  * 
  * El segundo tipo de cliente se encargará de verificar si existe un contacto y
  * lo mostrará en la salida.
