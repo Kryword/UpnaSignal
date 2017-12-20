@@ -1,4 +1,4 @@
-package app;
+package upnasignal;
 
 import javax.security.auth.Subject;
 
@@ -7,16 +7,17 @@ import javax.security.auth.Subject;
  * @author Cristian Berner
  */
 public class UASComponent implements Runnable{
+    final int port;
+    final int numThreads;
     
-    
-    public UASComponent(Subject subject, int numThreads){
-        
+    public UASComponent(Subject subject, int numThreads, int port){
+        this.port = port;
+        this.numThreads = numThreads;
     }
     
     
     @Override
     public void run(){
-        //Se implementa en la segunda parte del proyecto
     }
     
     public void stop(){

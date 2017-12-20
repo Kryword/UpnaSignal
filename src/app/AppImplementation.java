@@ -1,5 +1,6 @@
 package app;
 
+import upnasignal.UASComponent;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -54,7 +55,7 @@ final class AppImplementation {
     // Unico componente del servicio
     // Ejecutor para ejecución concurrente de componentes del servicio
     this.contactsComponent = new ContactsComponent(subject, numThreads);
-    this.uasComponent = new UASComponent(subject, numThreads);
+    this.uasComponent = new UASComponent(subject, numThreads, 2000);
     
     this.executorForServiceComponents = Executors.newFixedThreadPool(2);    
 
