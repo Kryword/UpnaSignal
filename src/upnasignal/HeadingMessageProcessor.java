@@ -5,10 +5,51 @@
  */
 package upnasignal;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
  *
  * @author Kryword
  */
-public class HeadingMessageProcessor {
+public class HeadingMessageProcessor implements Runnable{
+
+    Socket socket;
+    
+    protected HeadingMessageProcessor (final Socket socket){
+        this.socket = socket;
+    }
+    
+    @Override
+    public void run() {
+        try {
+            Messages messages = new Messages();
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            String message = in.readUTF();
+            
+            String[] data = messages.parseHeadingMessage(message);
+            final String type = data[0];
+            final String nickname = data[1];
+            
+            if(type.compareTo("register") == 0){
+                RegisterTask register = new RegisterTask(in, out, nickname);
+                register.accept();
+            }else if(type.compareTo("signal") == 0){
+                SignalTask signal = new SignalTask(in, out, nickname);
+                signal.accept();
+            }
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(HeadingMessageProcessor.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HeadingMessageProcessor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
 }
