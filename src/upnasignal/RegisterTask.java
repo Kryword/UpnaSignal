@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
+import verifier.VerifierCalculator;
 
 /**
  *
@@ -50,12 +51,56 @@ public class RegisterTask {
 
     protected void init(){
         try {
+            // Primera parte del protocolo. Envío mensaje de register
             Socket socket = new Socket(inetAddress, port);
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
             Messages messages = new Messages();
             final String messageRegister = messages.getHeadingMessage(nickname, INTERACTION);
             out.writeUTF(messageRegister);
+            String response = in.readUTF();
+            Boolean result = messages.parseResultStatusMessage(response);
+            Boolean bye = messages.parseBYEMessage(in.readUTF());
+            if (!result && bye){
+                System.out.println("Cliente cierra conexión.");
+                socket.close();
+                return;
+            }
+            
+            // Segunda parte del protocolo. Recepción de la pizca de sal y generación verificador
+            response = in.readUTF();
+            byte[] salt = messages.parseBytesMessage(response);
+            // Aquí para generar el verificador necesito la contraseña del usuario, no la tengo y no se de donde obtenerla
+            // Para fines de desarrollo asumiré una contraseña "prueba123"
+            VerifierCalculator vc = new VerifierCalculator();
+            try {
+                byte[] verifier = vc.getVerifier(nickname, "prueba123", salt);
+                //Devuelvo verdadero puesto que he obtenido el verificador correctamente
+                out.writeUTF(messages.getResultStatusMessage(true));
+                out.writeUTF(messages.getACKMessage());
+                
+                // Seguidamente envio el verificador, esto es de la parte 3 del protocolo
+                out.writeUTF(messages.getBytesMessage(verifier));
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(RegisterTask.class.getName()).log(Level.SEVERE, null, ex);
+                // Devuelvo falso y cierro conexión
+                out.writeUTF(messages.getResultStatusMessage(false));
+                out.writeUTF(messages.getBYEMessage());
+                socket.close();
+            }
+            //Sigo con la parte 3 del protocolo, recibo la respuesta del otro agente
+            response = in.readUTF();
+            result = messages.parseResultStatusMessage(response);
+            bye = messages.parseBYEMessage(in.readUTF());
+            if (!result && bye){
+                System.out.println("Cliente cierra conexión.");
+                socket.close();
+                return;
+            }
+            // Leo el BYE final
+            if(messages.parseBYEMessage(in.readUTF())){
+                System.out.println("Registro completado con éxito");
+            }
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(RegisterTask.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -81,14 +126,18 @@ public class RegisterTask {
                 out.writeUTF(message);
                 if(result){
                     message = messages.getACKMessage();
+                    out.writeUTF(message);
                 }else{
                     message = messages.getBYEMessage();
+                    out.writeUTF(message);
+                    in.close();
+                    out.close();
+                    return;
                 }
-                out.writeUTF(message);
             }
             
+            // Segunda parte del protocolo. Envio de la pizca de sal
             try {
-                // Segunda parte del protocolo. Envio de la pizca de sal
                 SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
                 byte[] salt = new byte[16];
                 sr.nextBytes(salt);
