@@ -38,7 +38,7 @@ import org.bouncycastle.crypto.params.SRP6GroupParameters;
  *
  * @author Kryword
  */
-public class SignalTask {
+final class SignalTask {
 
     static final String INTERACTION = "signal";
     static final SRP6GroupParameters PARAMS = rfc5054_1024;

@@ -24,7 +24,7 @@ import verifier.VerifierCalculator;
  *
  * @author Kryword
  */
-public class RegisterTask {
+final class RegisterTask {
 
     static final String INTERACTION = "register";
     final InetAddress inetAddress;

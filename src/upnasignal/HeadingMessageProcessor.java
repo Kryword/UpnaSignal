@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
  *
  * @author Kryword
  */
-public class HeadingMessageProcessor implements Runnable{
+final class HeadingMessageProcessor implements Runnable{
 
     Socket socket;
     
