@@ -32,21 +32,24 @@ final class RegisterTask {
     DataInputStream in;
     DataOutputStream out;
     final String nickname;
+    final String password;
     
-    protected RegisterTask(InetAddress inetAddress, int port, String nickname){
+    protected RegisterTask(final InetAddress inetAddress, final int port, final String nickname, final String password){
         this.inetAddress = inetAddress;
         this.port = port;
         this.nickname = nickname;
+        this.password = password;
         this.in = null;
         this.out = null;
     }
 
-    protected RegisterTask(DataInputStream in, DataOutputStream out, String nickname) {
+    protected RegisterTask(final DataInputStream in, final DataOutputStream out, final String nickname) {
         this.in = in;
         this.out = out;
         this.nickname = nickname;
         this.inetAddress = null;
         this.port = -1;
+        this.password = null;
     }
 
     protected void init(){
@@ -74,7 +77,7 @@ final class RegisterTask {
             // Para fines de desarrollo asumiré una contraseña "prueba123"
             VerifierCalculator vc = new VerifierCalculator();
             try {
-                byte[] verifier = vc.getVerifier(nickname, "prueba123", salt);
+                byte[] verifier = vc.getVerifier(nickname, password, salt);
                 //Devuelvo verdadero puesto que he obtenido el verificador correctamente
                 out.writeUTF(messages.getResultStatusMessage(true));
                 out.writeUTF(messages.getACKMessage());

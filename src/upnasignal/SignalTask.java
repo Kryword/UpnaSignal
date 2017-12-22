@@ -47,21 +47,24 @@ final class SignalTask {
     DataInputStream in;
     DataOutputStream out;
     final String nickname;
+    final String message;
     
-    SignalTask(InetAddress inetAddress, int port, String nickname) {
+    SignalTask(final InetAddress inetAddress, final int port, final String nickname, final String message) {
         this.inetAddress = inetAddress;
         this.port = port;
         this.nickname = nickname;
         this.in = null;
         this.out = null;
+        this.message = message;
     }
 
-    SignalTask(DataInputStream in, DataOutputStream out, String nickname) {
+    SignalTask(final DataInputStream in, final DataOutputStream out, final String nickname) {
         this.in = in;
         this.out = out;
         this.nickname = nickname;
         this.inetAddress = null;
         this.port = -1;
+        this.message = null;
     }
 
     protected void init(){
@@ -125,9 +128,8 @@ final class SignalTask {
                 final byte[] bytes = md.digest(clientS.toByteArray());
                 final SecretKeySpec key = new SecretKeySpec(bytes, 0, 1024, "AES");
                 encrypter.init(Cipher.ENCRYPT_MODE, key);
-                final String contenido = "señal";
-                final String message = messages.getBytesMessage(encrypter.doFinal(contenido.getBytes(StandardCharsets.UTF_8)));
-                out.writeUTF(message);
+                final String signalMessage = messages.getBytesMessage(encrypter.doFinal(message.getBytes(StandardCharsets.UTF_8)));
+                out.writeUTF(signalMessage);
             } catch (CryptoException ex) {
                 Logger.getLogger(SignalTask.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NoSuchPaddingException ex) {
