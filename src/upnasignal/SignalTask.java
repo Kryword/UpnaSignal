@@ -97,6 +97,7 @@ final class SignalTask {
             // Segunda parte del protocolo. Cálculo de A
             final SRP6Client client = new SRP6Client();
             SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+            // TODO: Verificador dentro del digest. Obtener desde el otro lado resultados
             client.init(PARAMS, new SHA256Digest(), sr);
             byte[] salt = new byte[16];
             while(new BigInteger(salt).signum() != 1){
@@ -131,6 +132,7 @@ final class SignalTask {
             
             try {
                 // Cuarto paso del protocolo, envío del texto encriptado de señal
+                // TODO: Generación del secreto a partir de lo obtenido desde la DB
                 final BigInteger clientS = client.calculateSecret(B);
                 Cipher encrypter = Cipher.getInstance("AES/CFB/PKCS5Padding");
                 final MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -241,6 +243,7 @@ final class SignalTask {
             // Cuarta parte del protocolo, creación de secreto y recepción de mensaje encriptado
             // Desencriptado del mensaje y muestro por consola el resultado
             try {
+                // TODO: Generación del secreto a partir de lo obtenido desde la DB
                 final BigInteger serverS = server.calculateSecret(B);
                 Cipher decrypter = Cipher.getInstance("AES/CFB/PKCS5Padding");
                 final MessageDigest md = MessageDigest.getInstance("SHA-256");
