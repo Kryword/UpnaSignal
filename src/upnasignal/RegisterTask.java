@@ -284,7 +284,7 @@ final class RegisterTask {
                 out.writeUTF(messages.getResultStatusMessage(true));
                 out.writeUTF(messages.getACKMessage());
                 
-                // Seguidamente envio el verificador, esto es de la parte 3 del protocolo
+                // Seguidamente envio el verificador, esto es de la parte 6 del protocolo
                 out.writeUTF(messages.getBytesMessage(verifier));
             } catch (NoSuchAlgorithmException ex) {
                 Logger.getLogger(RegisterTask.class.getName()).log(Level.SEVERE, null, ex);
@@ -295,7 +295,7 @@ final class RegisterTask {
                 out.close();
                 return 2;
             }
-            //Sigo con la parte 5 del protocolo, recibo la respuesta del otro agente
+            //Sigo con la parte  del protocolo, recibo la respuesta del otro agente
             response = in.readUTF();
             result = messages.parseResultStatusMessage(response);
             final Boolean bye = messages.parseBYEMessage(in.readUTF());
