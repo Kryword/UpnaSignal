@@ -49,6 +49,8 @@ final class SignalTask {
     final String nickname;
     final String message;
     
+    
+    // TODO: Eliminar la ip de aquí y buscarla en la base de datos para empezar una nueva conexión
     SignalTask(final InetAddress inetAddress, final int port, final String nickname, final String message) {
         this.inetAddress = inetAddress;
         this.port = port;
