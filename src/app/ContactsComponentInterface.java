@@ -61,6 +61,13 @@ public class ContactsComponentInterface {
         return contactsComponent.submit(task);
     }
     
+    public Future<DataToSendSignal> getDataToSendSignal (final String nickname){
+        final ContactsComponent contactsComponent = AppImplementation.getService().getContactsComponent();
+        final Subject subject = AppImplementation.getService().getSubject();
+        final Callable<DataToSendSignal> task = new GetDataToSendSignal(subject, nickname);
+        return contactsComponent.submit(task);
+    }
+    
     /**
      * Clase confinada IsInContacts, está encargada de tener el método para
      * acceder a la base de datos y obtener si un contacto ya está registrado
@@ -195,6 +202,62 @@ public class ContactsComponentInterface {
                             final byte[] result;
                             if (rs.next()){
                                 result = rs.getBytes("verifier");
+                            }else{
+                                result = null;
+                            }
+                            return result;
+                        }
+                        
+                    } catch (final SQLTimeoutException ex) {
+                        LOGGER.log(Level.SEVERE, "timeout al abrir la conexion", ex);
+                    } catch (final SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "error al abrir la conexion", ex);
+                    }
+                    //En caso de que no consiga ejecutarse devuelvo nulo
+                    return null;
+                }, null);
+            });
+            
+        }
+        
+    }
+    
+    /**
+     * Clase confinada encargada de obtener los datos necesarios para hacer el
+     * mensaje de signal. Obtiene nickname propio, sal y dirección ip y las junta
+     * en una estructura DataToSendSignal. Devuelve esta estructura como resultado
+     */
+    final class GetDataToSendSignal implements Callable<DataToSendSignal>{
+        
+        private final Subject subject;
+        private final String nickname;
+        
+        protected GetDataToSendSignal(final Subject subject, final String nickname){
+            this.subject = subject;
+            this.nickname = nickname;
+        }
+        
+        @Override
+        public DataToSendSignal call() throws PrivilegedActionException {
+            LOGGER.log(Level.INFO, "\t<GetDataToSendSignal::call\t(thread id {0})>", Thread.currentThread().getId());
+            return AccessController.doPrivileged((PrivilegedExceptionAction<DataToSendSignal>)() ->{
+                return Subject.doAsPrivileged(subject, (PrivilegedExceptionAction<DataToSendSignal>) () ->{
+                    
+                    
+                    try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+                        
+                        final String insertStatement = "SELECT verifier FROM Contacts WHERE nickname=?";
+                        final PreparedStatement preparedInsertStatement = connection.prepareStatement(insertStatement);
+                        preparedInsertStatement.setString(1, nickname);
+                        if (preparedInsertStatement.execute()) {
+
+                            final ResultSet rs = preparedInsertStatement.getResultSet();
+                            final DataToSendSignal result;
+                            if (rs.next()){
+                                final String nick = rs.getString("myNickname");
+                                final byte[] salt = rs.getBytes("salt");
+                                final byte[] ip = rs.getBytes("ipAdress");
+                                result = new DataToSendSignal(nick, salt, ip);
                             }else{
                                 result = null;
                             }
