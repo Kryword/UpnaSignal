@@ -52,7 +52,7 @@ final class RegisterTask {
         this.password = null;
     }
 
-    protected void init(){
+    protected int init(){
         try {
             // Primera parte del protocolo. Envío mensaje de register
             Socket socket = new Socket(inetAddress, port);
@@ -67,7 +67,7 @@ final class RegisterTask {
             if (!result && bye){
                 System.out.println("Cliente cierra conexión.");
                 socket.close();
-                return;
+                return 1;
             }
             
             // Segunda parte del protocolo. Recepción de la pizca de sal y generación verificador
@@ -90,6 +90,7 @@ final class RegisterTask {
                 out.writeUTF(messages.getResultStatusMessage(false));
                 out.writeUTF(messages.getBYEMessage());
                 socket.close();
+                return 2;
             }
             //Sigo con la parte 3 del protocolo, recibo la respuesta del otro agente
             response = in.readUTF();
@@ -98,21 +99,22 @@ final class RegisterTask {
             if (!result && bye){
                 System.out.println("Cliente cierra conexión.");
                 socket.close();
-                return;
+                return 2;
             }
             // Leo el BYE final
             if(messages.parseBYEMessage(in.readUTF())){
                 System.out.println("Registro completado con éxito");
             }
+            return 0;
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(RegisterTask.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RegisterTask.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        return 2;
     }
     
-    protected void accept() {
+    protected int accept() {
         try{
             Messages messages = new Messages();
             ContactsComponentInterface contactsInterface = new ContactsComponentInterface();
@@ -135,7 +137,7 @@ final class RegisterTask {
                     out.writeUTF(message);
                     in.close();
                     out.close();
-                    return;
+                    return 2;
                 }
             }
             
@@ -152,7 +154,7 @@ final class RegisterTask {
                 if (!resultSalt && !ack){
                     in.close();
                     out.close();
-                    return;
+                    return 2;
                 }
             } catch (NoSuchAlgorithmException ex) {
                 System.err.println("Algoritmo para la sal no existente");
@@ -183,17 +185,19 @@ final class RegisterTask {
                     out.writeUTF(messages.getBYEMessage());
                     in.close();
                     out.close();
-                    return;
+                    return 2;
                 }
                 
             }
             // Despedida
             out.writeUTF(messages.getBYEMessage());
+            return 0;
         }catch(ParserConfigurationException e){
             System.err.println("Error con el parser");
         } catch (IOException ex) {
             Logger.getLogger(RegisterTask.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return 2;
     }
     
 }

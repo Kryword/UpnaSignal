@@ -67,7 +67,7 @@ final class SignalTask {
         this.message = null;
     }
 
-    protected void init(){
+    protected int init(){
         try {
             Socket socket = new Socket(inetAddress, port);
             this.in = new DataInputStream(socket.getInputStream());
@@ -83,7 +83,7 @@ final class SignalTask {
             if (!result && bye){
                 System.out.println("Cliente cierra conexión.");
                 socket.close();
-                return;
+                return 1;
             }
             
             // Segunda parte del protocolo. Cálculo de A
@@ -103,7 +103,7 @@ final class SignalTask {
             if (!result && bye){
                 System.out.println("Cliente cierra conexión.");
                 socket.close();
-                return;
+                return 1;
             }
             
             // Tercer paso del protocolo, obtenemos B desde el servicio
@@ -115,6 +115,7 @@ final class SignalTask {
                 out.writeUTF(messages.getResultStatusMessage(false));
                 out.writeUTF(messages.getBYEMessage());
                 socket.close();
+                return 1;
             }else{
                 out.writeUTF(messages.getResultStatusMessage(true));
                 out.writeUTF(messages.getACKMessage());
@@ -146,9 +147,10 @@ final class SignalTask {
                 if (!result && bye){
                     System.out.println("Cliente cierra conexión.");
                     socket.close();
-                    return;
+                    return 1;
                 }
             }
+            return 0;
         }catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(SignalTask.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -156,9 +158,10 @@ final class SignalTask {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(SignalTask.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return 1;
     }
     
-    protected void accept() {
+    protected int accept() {
         try{
             // Primera parte del protocolo. Verifico si el usuario está en la base de datos y si no devuelvo falso
             Messages messages = new Messages();
@@ -182,7 +185,7 @@ final class SignalTask {
                     out.writeUTF(messages.getBYEMessage());
                     in.close();
                     out.close();
-                    return;
+                    return 1;
                 }
             }
             // Segunda parte del protocolo, recibo A desde el cliente
@@ -193,7 +196,7 @@ final class SignalTask {
                 out.writeUTF(messages.getBYEMessage());
                 in.close();
                 out.close();
-                return;
+                return 1;
             }else{
                 out.writeUTF(messages.getResultStatusMessage(true));
                 out.writeUTF(messages.getACKMessage());
@@ -223,7 +226,7 @@ final class SignalTask {
                     System.out.println("Servicio cierra conexión.");
                     in.close();
                     out.close();
-                    return;
+                    return 1;
                 }
             }
             
@@ -263,6 +266,7 @@ final class SignalTask {
                 in.close();
                 out.close();
             }
+            return 0;
         } catch (IOException ex) {
             Logger.getLogger(SignalTask.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParserConfigurationException ex) {
@@ -270,6 +274,7 @@ final class SignalTask {
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(SignalTask.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return 1;
     }
     
 }
