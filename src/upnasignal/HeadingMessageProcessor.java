@@ -36,7 +36,7 @@ final class HeadingMessageProcessor implements Runnable{
             String[] data = messages.parseHeadingMessage(message);
             final String type = data[0];
             final String nickname = data[1];
-            
+            final String myNick = "Server";
             if(type.compareTo("register") == 0){
                 RegisterTask register = new RegisterTask(in, out, nickname, myNick);
                 register.accept();
