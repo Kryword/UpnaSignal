@@ -47,10 +47,10 @@ public class ContactsComponentInterface {
         return contactsComponent.submit(task);
     }
     
-    public Future<Boolean> addContact (final String nickname, final byte[] verifier){
+    public Future<Boolean> addContact (final String nickname, final byte[] verifier, final String myNickname, final byte[] ipAddress, final byte[] salt){
         final ContactsComponent contactsComponent = AppImplementation.getService().getContactsComponent();
         final Subject subject = AppImplementation.getService().getSubject();
-        final Callable<Boolean> task = new AddContact(subject, nickname, verifier);
+        final Callable<Boolean> task = new AddContact(subject, nickname, verifier, myNickname, ipAddress, salt);
         return contactsComponent.submit(task);
     }
     
@@ -123,12 +123,18 @@ public class ContactsComponentInterface {
         private final Subject subject;
         private final String nickname;
         private final byte[] verifier;
+        private final String myNickname;
+        private final byte[] ipAddress;
+        private final byte[] salt;
         private final byte[] key;
         
-        protected AddContact(final Subject subject, final String nickname, final byte[] verifier){
+        protected AddContact(final Subject subject, final String nickname, final byte[] verifier, final String myNickname, final byte[] ipAddress, final byte[] salt){
             this.subject = subject;
             this.nickname = nickname;
             this.verifier = verifier;
+            this.myNickname = myNickname;
+            this.ipAddress = ipAddress;
+            this.salt = salt;
             byte[] tempKey = null;
             try{
                 MessageDigest md = MessageDigest.getInstance("SHA1", "BC");
@@ -149,11 +155,14 @@ public class ContactsComponentInterface {
                     
                     try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                         
-                        final String insertStatement = "INSERT INTO Contacts(contactkey, nickname, verifier) VALUES (?,?,?)";
+                        final String insertStatement = "INSERT INTO Contacts(contactkey, nickname, verifier, myNickname, ipAddress, salt) VALUES (?,?,?,?,?,?)";
                         final PreparedStatement preparedInsertStatement = connection.prepareStatement(insertStatement);
                         preparedInsertStatement.setBytes(1, key);
                         preparedInsertStatement.setString(2, nickname);
                         preparedInsertStatement.setBytes(3, verifier);
+                        preparedInsertStatement.setString(4, myNickname);
+                        preparedInsertStatement.setBytes(5, ipAddress);
+                        preparedInsertStatement.setBytes(6, salt);
                         return preparedInsertStatement.executeUpdate() > 0;
                         
                     } catch (final SQLTimeoutException ex) {

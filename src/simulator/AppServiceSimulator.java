@@ -26,13 +26,13 @@ public class AppServiceSimulator {
         
         Runnable client0 = new CheckClient(0, "cristian");
         
-        Runnable client1 = new AddClient(1, "cristian", "labops");
+        Runnable client1 = new AddClient(1, "cristian", "labops", "Server", "127.0.0.1".getBytes(), "salt".getBytes());
         
         Runnable client2 = new CheckClient(2, "cristian");
         
         Runnable client3 = new GetClientVerifier(3, "cristian");
         
-        Runnable client4 = new AddClient(4, "paco", "1234");
+        Runnable client4 = new AddClient(4, "paco", "1234", "Server", "127.0.0.1".getBytes(), "salt".getBytes());
         
         Runnable client5 = new GetClientVerifier(5, "paco");
         

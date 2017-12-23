@@ -132,9 +132,10 @@ final class RegisterTask {
                 }
             }
             // Paso 5 del protocolo, creo y envío pizca de sal
+            byte[] saltOut = null;
             try {
                 SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-                byte[] saltOut = new byte[16];
+                saltOut = new byte[16];
                 sr.nextBytes(saltOut);
                 String message = messages.getBytesMessage(saltOut);
                 out.writeUTF(message);
@@ -156,7 +157,7 @@ final class RegisterTask {
             try{
                 String messageVerifier = in.readUTF();
                 byte[] verifier = messages.parseBytesMessage(messageVerifier);
-                Future<Boolean> futureAdd = contactsInterface.addContact(nick,verifier);
+                Future<Boolean> futureAdd = contactsInterface.addContact(nick,verifier, myNickname, inetAddress.getAddress(), saltOut);
                 Boolean addContact = futureAdd.get();
                 result = addContact;
             } catch (InterruptedException ex) {
@@ -219,9 +220,10 @@ final class RegisterTask {
             }
             
             // Segunda parte del protocolo. Envio de la pizca de sal
+            byte[] salt = null;
             try {
                 SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-                byte[] salt = new byte[16];
+                salt = new byte[16];
                 sr.nextBytes(salt);
                 String message = messages.getBytesMessage(salt);
                 out.writeUTF(message);
@@ -242,7 +244,7 @@ final class RegisterTask {
             try{
                 final String messageVerifier = in.readUTF();
                 byte[] verifier = messages.parseBytesMessage(messageVerifier);
-                Future<Boolean> futureAdd = contactsInterface.addContact(nickname,verifier);
+                Future<Boolean> futureAdd = contactsInterface.addContact(nickname,verifier, myNickname, inetAddress.getAddress(), salt);
                 Boolean addContact = futureAdd.get();
                 result = addContact;
             } catch (InterruptedException ex) {
@@ -276,7 +278,7 @@ final class RegisterTask {
             }
             // Paso 5 del protocolo, recepción de la pizca de sal y generación del verificador
             String response = in.readUTF();
-            byte[] salt = messages.parseBytesMessage(response);
+            salt = messages.parseBytesMessage(response);
             VerifierCalculator vc = new VerifierCalculator();
             try {
                 byte[] verifier = vc.getVerifier(nickname, new String(myPassword), salt);

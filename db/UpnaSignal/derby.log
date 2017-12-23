@@ -1,7 +1,7 @@
-Sat Dec 23 16:57:54 CET 2017 : Servidor de red Apache Derby: Se ha iniciado 10.11.1.2 - (1629631) y está listo para aceptar las conexiones en el puerto 1527
+Sat Dec 23 17:37:44 CET 2017 : Servidor de red Apache Derby: Se ha iniciado 10.11.1.2 - (1629631) y está listo para aceptar las conexiones en el puerto 1527
 ----------------------------------------------------------------
-Sat Dec 23 16:57:54 CET 2017:
- Iniciando instancia a816c00e-0160-8418-5124-ffffd6a2dece de Derby, versión The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): 
+Sat Dec 23 17:37:44 CET 2017:
+ Iniciando instancia a816c00e-0160-843c-c8a1-ffffd6a2dece de Derby, versión The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): 
 en el directorio de base de datos C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal\UpnaSignal con el cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
 Cargado desde file:/C:/Program%20Files/Java/jdk1.8.0_121/db/lib/derby.jar
 java.vendor=Oracle Corporation
@@ -12,9 +12,3 @@ os.arch=amd64
 os.version=6.1
 derby.system.home=C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal
 Cargador de clases de base de datos iniciado - derby.database.classpath=''
-----------------------------------------------------------------
-Sat Dec 23 16:58:09 CET 2017: cerrando motor de Derby
-----------------------------------------------------------------
-Sat Dec 23 16:58:09 CET 2017:
-Cerrando la instancia a816c00e-0160-8418-5124-ffffd6a2dece en el directorio de base de datos C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal\UpnaSignal con cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
-----------------------------------------------------------------

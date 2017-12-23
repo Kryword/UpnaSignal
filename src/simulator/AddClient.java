@@ -23,11 +23,17 @@ public final class AddClient implements Runnable{
     final String pass;
     final String nickname;
     final int id;
+    final String myNickname;
+    final byte[] ipAddress;
+    final byte[] salt;
 
-    public AddClient(int id, final String nickname, final String password) {
+    public AddClient(int id, final String nickname, final String password, final String myNickname, final byte[] ipAddress, final byte[] salt) {
         this.nickname = nickname;
         this.pass = password;
         this.id = id;
+        this.myNickname = nickname;
+        this.ipAddress = ipAddress;
+        this.salt = salt;
     }
 
 
@@ -45,7 +51,7 @@ public final class AddClient implements Runnable{
                 final SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
                 final byte[] salt = new byte[16];
                 sr.nextBytes(salt);
-                Future<Boolean> futureAdd = contactsInterface.addContact(nickname,vCalculator.getVerifier(nickname, pass, salt));
+                Future<Boolean> futureAdd = contactsInterface.addContact(nickname,vCalculator.getVerifier(nickname, pass, salt), myNickname, ipAddress, salt);
                 Boolean addContact = futureAdd.get();
                 if(addContact){
                     System.out.println("ClientID " + id + ":: <ThreadID:" + Thread.currentThread().getId() + "> Result<addContact(" + nickname + ")>: Añadido correctamente");
