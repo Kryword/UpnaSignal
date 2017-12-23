@@ -67,6 +67,14 @@ final class SignalTask {
         this.message = null;
     }
 
+    /**
+     * Información adicional: A la hora de generar los secretos se puede utilizar
+     * el verificador del otro. Es decir, si tenemos nuestro verificador, hacemos
+     * un init con el digest de nuestro verificador y a la hora de calcular el
+     * secreto utlizamos calculateSecret con el verificador del otro como argumento
+     * @return 
+     */
+    
     protected int init(){
         try {
             Socket socket = new Socket(inetAddress, port);

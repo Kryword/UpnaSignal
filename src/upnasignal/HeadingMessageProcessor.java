@@ -38,7 +38,7 @@ final class HeadingMessageProcessor implements Runnable{
             final String nickname = data[1];
             
             if(type.compareTo("register") == 0){
-                RegisterTask register = new RegisterTask(in, out, nickname);
+                RegisterTask register = new RegisterTask(in, out, nickname, myNick);
                 register.accept();
             }else if(type.compareTo("signal") == 0){
                 SignalTask signal = new SignalTask(in, out, nickname);
