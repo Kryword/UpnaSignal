@@ -12,3 +12,9 @@ os.arch=amd64
 os.version=6.1
 derby.system.home=C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal
 Cargador de clases de base de datos iniciado - derby.database.classpath=''
+----------------------------------------------------------------
+Sat Dec 23 17:47:45 CET 2017: cerrando motor de Derby
+----------------------------------------------------------------
+Sat Dec 23 17:47:45 CET 2017:
+Cerrando la instancia a816c00e-0160-843c-c8a1-ffffd6a2dece en el directorio de base de datos C:\Users\Kryword\Universidad\3er Año\Semestre 5\Programación Segura\Prácticas\UpnaSignal\db\UpnaSignal\UpnaSignal con cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
+----------------------------------------------------------------

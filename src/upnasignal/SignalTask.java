@@ -6,6 +6,7 @@
 package upnasignal;
 
 import app.ContactsComponentInterface;
+import app.DataToSendSignal;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -42,7 +43,7 @@ final class SignalTask {
 
     static final String INTERACTION = "signal";
     static final SRP6GroupParameters PARAMS = rfc5054_1024;
-    final InetAddress inetAddress;
+    InetAddress inetAddress;
     final int port;
     DataInputStream in;
     DataOutputStream out;
@@ -50,9 +51,8 @@ final class SignalTask {
     final String message;
     
     
-    // TODO: Eliminar la ip de aquí y buscarla en la base de datos para empezar una nueva conexión
-    SignalTask(final InetAddress inetAddress, final int port, final String nickname, final String message) {
-        this.inetAddress = inetAddress;
+    SignalTask(final int port, final String nickname, final String message) {
+        this.inetAddress = null;
         this.port = port;
         this.nickname = nickname;
         this.in = null;
@@ -74,11 +74,30 @@ final class SignalTask {
      * el verificador del otro. Es decir, si tenemos nuestro verificador, hacemos
      * un init con el digest de nuestro verificador y a la hora de calcular el
      * secreto utlizamos calculateSecret con el verificador del otro como argumento
-     * @return 
+     * @return código ejecución (0 correcto, 1 error)
      */
     
     protected int init(){
         try {
+            // Intento obtener los datos del cliente desde la base de datos
+            ContactsComponentInterface contactsInterface = new ContactsComponentInterface();
+            Future<DataToSendSignal> futureData = contactsInterface.getDataToSendSignal(nickname);
+            byte[] saltForSignal = null;
+            String myNickname = null;
+            try {
+                DataToSendSignal data = futureData.get();
+                inetAddress = InetAddress.getByAddress(data.getIp());
+                saltForSignal = data.getSalt();
+                myNickname = data.getMyNickname();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SignalTask.class.getName()).log(Level.SEVERE, null, ex);
+                return 1;
+            } catch (ExecutionException ex) {
+                Logger.getLogger(SignalTask.class.getName()).log(Level.SEVERE, null, ex);
+                return 1;
+            }
+            
+            
             Socket socket = new Socket(inetAddress, port);
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
@@ -101,13 +120,10 @@ final class SignalTask {
             SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
             // TODO: Verificador dentro del digest. Obtener desde el otro lado resultados
             client.init(PARAMS, new SHA256Digest(), sr);
-            byte[] salt = new byte[16];
-            while(new BigInteger(salt).signum() != 1){
-                sr.nextBytes(salt);
-            }
             // Estoy usando esa contraseña debido a que aún no hay ninguna implementación para obtener una
             // En el futuro se cambiará por la contraseña introducida por el cliente.
-            final BigInteger A = client.generateClientCredentials(salt, nickname.getBytes(), "prueba123".getBytes());
+            // TODO: Modificar A para usar verificador. Sigo sin encontrar como se hace
+            final BigInteger A = client.generateClientCredentials(saltForSignal, myNickname.getBytes(), "prueba123".getBytes());
             out.writeUTF(messages.getBytesMessage(A.toByteArray())); 
             result = messages.parseResultStatusMessage(response);
             bye = messages.parseBYEMessage(in.readUTF());

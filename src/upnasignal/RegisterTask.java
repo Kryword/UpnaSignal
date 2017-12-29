@@ -45,13 +45,22 @@ final class RegisterTask {
         this.in = null;
         this.out = null;
     }
-
-    protected RegisterTask(final DataInputStream in, final DataOutputStream out, final String nickname, final String myNickname) {
+    /**
+     * He modificado este constructor para recibir la IP, 
+     * puesto que necesito la ip en el paso 3 del protocolo 
+     * dentro del accept y es la única forma de obtenerlo, 
+     * puesto que aún no está registrado en ningún lado
+     * @param in
+     * @param out
+     * @param nickname
+     * @param myNickname 
+     */
+    protected RegisterTask(final DataInputStream in, final DataOutputStream out, final String nickname, final String myNickname, final InetAddress inetAddress) {
         this.in = in;
         this.out = out;
         this.nickname = nickname;
         this.myNickname = myNickname;
-        this.inetAddress = null;
+        this.inetAddress = inetAddress;
         this.port = -1;
         this.myPassword = null;
     }
